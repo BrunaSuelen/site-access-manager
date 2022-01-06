@@ -40,7 +40,6 @@ namespace SiteAccessManager.Services
             try	
             {
                 string endpint = $"{this.Url}/get/{site.Name}/{site.Name}{site.Id}";
-                Console.WriteLine(endpint);
                 return await SiteHits(endpint);
             }
             catch(HttpRequestException e)

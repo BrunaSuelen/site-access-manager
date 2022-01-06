@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SiteAccessManager.Adapters;
 using SiteAccessManager.Models;
+using SiteAccessManager.Services;
 
 namespace SiteAccessManager.Controllers
 {
@@ -14,6 +16,7 @@ namespace SiteAccessManager.Controllers
     public class SiteController : ControllerBase
     {
         private readonly SiteContext _context;
+        private readonly AccessService accessService = new AccessService();
 
         public SiteController(SiteContext context)
         {
@@ -83,6 +86,34 @@ namespace SiteAccessManager.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSite), new { id = site.Id }, site);
+        }
+
+        // POST: api/Site/hit/5
+        [HttpPost("hit/{id}")]
+        public async Task<ActionResult<AccessAdapter>> PostSiteHit(long id)
+        {
+            var site = await _context.Sites.FindAsync(id);
+
+            if (site == null)
+            {
+                return NotFound();
+            }
+
+            return await this.accessService.Hit(site);
+        }
+
+        // GET: api/Site/hits/5
+        [HttpGet("hits/{id}")]
+        public async Task<ActionResult<AccessAdapter>> GetSiteHit(long id)
+        {
+            var site = await _context.Sites.FindAsync(id);
+
+            if (site == null)
+            {
+                return NotFound();
+            }
+
+            return await this.accessService.Hits(site);
         }
 
         // DELETE: api/Site/5
