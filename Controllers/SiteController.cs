@@ -82,7 +82,7 @@ namespace SiteAccessManager.Controllers
             _context.Sites.Add(site);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSite", new { id = site.Id }, site);
+            return CreatedAtAction(nameof(GetSite), new { id = site.Id }, site);
         }
 
         // DELETE: api/Site/5
